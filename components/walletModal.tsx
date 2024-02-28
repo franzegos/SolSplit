@@ -2,13 +2,14 @@
 
 require('@solana/wallet-adapter-react-ui/styles.css')
 
+import { cn } from '@/lib/utils'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
 import { Loader2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 // import dynamic from 'next/dynamic'
 import { useEffect } from 'react'
-import { Button } from './ui/button'
+import { buttonVariants } from './ui/button'
 
 /*
   The use of `next/dynamic` is necessary here because components from the
@@ -77,8 +78,8 @@ export const WalletConnect = () => {
 	}, [disconnect, connect])
 
 	return (
-		<Button className='p-0 h-fit'>
+		<div className={cn(buttonVariants({ variant: 'default' }), 'p-0 h-fit')}>
 			<WalletMultiButton />
-		</Button>
+		</div>
 	)
 }
