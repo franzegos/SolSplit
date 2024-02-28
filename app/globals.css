@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+.wallet-adapter-dropdown > .wallet-adapter-button,
+.wallet-adapter-button-trigger {
+  /* all: unset !important; */
+  background-color: unset !important;
+  height: unset !important;
+  line-height: unset !important;
+  padding: unset !important;
+
+  @apply !h-10 !px-4 !py-2;
+}
+
 @layer base {
   h1 {
     @apply text-2xl;
@@ -88,4 +99,3 @@
     @apply bg-background text-foreground;
   }
 }
-
