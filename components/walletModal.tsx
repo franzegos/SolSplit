@@ -34,7 +34,7 @@ const WalletMultiButton = dynamic(
 	{
 		ssr: false,
 		loading: () => (
-			<div className='wallet-adapter-button wallet-adapter-button-trigger max-w-[172.81px] flex justify-center'>
+			<div className='wallet-adapter-button wallet-adapter-button-trigger w-full flex justify-center'>
 				<Loader2 className='animate-spin' />
 			</div>
 		)
@@ -78,7 +78,11 @@ export const WalletConnect = () => {
 	}, [disconnect, connect])
 
 	return (
-		<div className={cn(buttonVariants({ variant: 'default' }), 'p-0 h-fit')}>
+		<div
+			className={cn(
+				buttonVariants({ variant: 'default' }),
+				'p-0 h-fit block w-full'
+			)}>
 			<WalletMultiButton />
 		</div>
 	)

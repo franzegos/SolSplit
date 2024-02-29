@@ -15,7 +15,8 @@ const network = NODE_ENV === 'development' ? 'devnet' : 'mainnet-beta'
 
 export const connection = new Connection(clusterApiUrl(network), 'confirmed')
 
-export const getBalance = async (publicKey: string) => {
+export const getBalance = async (publicKey: string | undefined) => {
+	if (!publicKey) return
 	const balance = await connection.getBalance(new PublicKey(publicKey))
 	return balance / LAMPORTS_PER_SOL
 }

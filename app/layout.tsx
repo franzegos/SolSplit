@@ -1,3 +1,4 @@
+import Sidebar from '@/components/sidebar'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -19,7 +20,12 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className={cn('font-sans antialiased', inter.variable)}>
-				<RootProvider>{children}</RootProvider>
+				<RootProvider>
+					<div className='flex'>
+						<Sidebar />
+						{children}
+					</div>
+				</RootProvider>
 			</body>
 		</html>
 	)
