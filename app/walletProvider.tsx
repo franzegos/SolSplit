@@ -1,5 +1,6 @@
 'use client'
 
+import { NODE_ENV } from '@/lib/constant'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import {
 	ConnectionProvider,
@@ -11,8 +12,13 @@ import { clusterApiUrl } from '@solana/web3.js'
 type WalletContextProviderProps = {
 	children: React.ReactNode
 }
+
+const network =
+	NODE_ENV === 'development'
+		? WalletAdapterNetwork.Devnet
+		: WalletAdapterNetwork.Mainnet
+
 const WalletContextProvider = ({ children }: WalletContextProviderProps) => {
-	const network = WalletAdapterNetwork.Devnet
 	const endpoint = clusterApiUrl(network)
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const wallets: any = []

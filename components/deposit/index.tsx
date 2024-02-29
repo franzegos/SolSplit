@@ -1,0 +1,113 @@
+'use client'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+import { WalletNotConnectedError } from '@solana/wallet-adapter-base'
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import {
+	LAMPORTS_PER_SOL,
+	PublicKey,
+	SystemProgram,
+	Transaction
+} from '@solana/web3.js'
+import React, { useCallback, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import Spinner from '../spinner'
+import { Button } from '../ui/button'
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage
+} from '../ui/form'
+import { Input } from '../ui/input'
+
+const formSchema = z.object({
+	amount: z.coerce.number().gt(0, { message: 'Amount is required' })
+})
+
+const Deposit = () => {
+	const { connection } = useConnection()
+	const { publicKey, sendTransaction } = useWallet()
+
+	const [isLoading, setIsLoading] = useState(false)
+
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			amount: 0
+		}
+	})
+
+	const onSubmit = useCallback(
+		async ({ amount }: z.infer<typeof formSchema>) => {
+			try {
+				setIsLoading(true)
+				if (!publicKey) throw new WalletNotConnectedError()
+
+				// TODO: Fetch cloud wallet
+				const transaction = new Transaction().add(
+					SystemProgram.transfer({
+						fromPubkey: publicKey,
+						toPubkey: new PublicKey(
+							'3v2xLfp4KrMZNryNh8kwDj3LnZTcZ33XrnrUJoggPGvu'
+						),
+						lamports: amount * LAMPORTS_PER_SOL
+					})
+				)
+
+				const {
+					context: { slot: minContextSlot },
+					value: { blockhash, lastValidBlockHeight }
+				} = await connection.getLatestBlockhashAndContext()
+
+				const signature = await sendTransaction(transaction, connection, {
+					minContextSlot
+				})
+
+				await connection.confirmTransaction({
+					blockhash,
+					lastValidBlockHeight,
+					signature
+				})
+			} catch (error) {
+				console.error(error)
+			} finally {
+				setIsLoading(false)
+			}
+		},
+		[publicKey, sendTransaction, connection]
+	)
+
+	// TODO: Display Cloud Wallet Public Key
+	return (
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+				<FormField
+					control={form.control}
+					name='amount'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Deposit SOL Amount</FormLabel>
+							<FormControl>
+								<Input placeholder='Input Amount' {...field} />
+							</FormControl>
+							<FormDescription>
+								Deposit SOL to your Cloud Wallet
+							</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<Button type='submit' disabled={!publicKey || isLoading}>
+					{isLoading ? <Spinner>Depositing</Spinner> : 'Deposit'}
+				</Button>
+			</form>
+		</Form>
+	)
+}
+
+export default Deposit
