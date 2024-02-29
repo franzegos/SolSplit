@@ -1,5 +1,6 @@
 'use client'
 
+import { useCloudWallet } from '@/query/cloud-wallet'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
@@ -33,6 +34,8 @@ const Deposit = () => {
 	const { connection } = useConnection()
 	const { publicKey, sendTransaction } = useWallet()
 
+	const { data } = useCloudWallet({ publicKey })
+
 	const [isLoading, setIsLoading] = useState(false)
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -48,13 +51,10 @@ const Deposit = () => {
 				setIsLoading(true)
 				if (!publicKey) throw new WalletNotConnectedError()
 
-				// TODO: Fetch cloud wallet
 				const transaction = new Transaction().add(
 					SystemProgram.transfer({
 						fromPubkey: publicKey,
-						toPubkey: new PublicKey(
-							'3v2xLfp4KrMZNryNh8kwDj3LnZTcZ33XrnrUJoggPGvu'
-						),
+						toPubkey: new PublicKey(data?.publicKey ?? ''),
 						lamports: amount * LAMPORTS_PER_SOL
 					})
 				)
@@ -79,12 +79,18 @@ const Deposit = () => {
 				setIsLoading(false)
 			}
 		},
-		[publicKey, sendTransaction, connection]
+		[publicKey, sendTransaction, connection, data?.publicKey]
 	)
 
-	// TODO: Display Cloud Wallet Public Key
+	console.log(data?.publicKey)
+
 	return (
 		<Form {...form}>
+			<Input
+				disabled
+				defaultValue={data?.publicKey}
+				placeholder='Cloud Wallet Address'
+			/>
 			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
 				<FormField
 					control={form.control}
