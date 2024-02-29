@@ -99,12 +99,13 @@ const Deposit = () => {
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Deposit SOL Amount</FormLabel>
-							<FormControl>
-								<Input placeholder='Input Amount' {...field} />
-							</FormControl>
 							<FormDescription>
 								Deposit SOL to your Cloud Wallet
 							</FormDescription>
+							<FormControl>
+								<Input placeholder='Input Amount' {...field} />
+							</FormControl>
+
 							<FormMessage />
 						</FormItem>
 					)}
