@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.wallet-adapter-dropdown {
+  @apply !w-full;
+}
+
 .wallet-adapter-dropdown > .wallet-adapter-button,
 .wallet-adapter-button-trigger {
   /* all: unset !important; */
@@ -10,7 +14,11 @@
   line-height: unset !important;
   padding: unset !important;
 
-  @apply !h-10 !px-4 !py-2;
+  @apply !h-10 !px-4 !py-2 !w-full !flex !justify-center;
+}
+
+.wallet-adapter-dropdown-list {
+  left: 0;
 }
 
 @layer base {
