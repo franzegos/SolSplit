@@ -49,12 +49,12 @@ const Deposit = () => {
 		async ({ amount }: z.infer<typeof formSchema>) => {
 			try {
 				setIsLoading(true)
-				if (!publicKey) throw new WalletNotConnectedError()
+				if (!publicKey || !data?.publicKey) throw new WalletNotConnectedError()
 
 				const transaction = new Transaction().add(
 					SystemProgram.transfer({
 						fromPubkey: publicKey,
-						toPubkey: new PublicKey(data?.publicKey ?? ''),
+						toPubkey: new PublicKey(data?.publicKey),
 						lamports: amount * LAMPORTS_PER_SOL
 					})
 				)
@@ -76,10 +76,11 @@ const Deposit = () => {
 			} catch (error) {
 				console.error(error)
 			} finally {
+				form.reset()
 				setIsLoading(false)
 			}
 		},
-		[publicKey, sendTransaction, connection, data?.publicKey]
+		[publicKey, sendTransaction, connection, data?.publicKey, form.reset]
 	)
 
 	console.log(data?.publicKey)
