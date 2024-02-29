@@ -6,6 +6,7 @@ import { useCloudWallet } from '@/query/cloud-wallet'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import QRCode from '../qrcode'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
@@ -116,13 +117,8 @@ const Address = () => {
 				</SelectContent>
 			</Select>
 
-			<div className='flex flex-col items-center justify-center w-full'>
-				<Image
-					src={'/assets/QR.png'}
-					width={200}
-					height={200}
-					alt='Solana Logo'
-				/>
+			<div className='flex flex-col items-center justify-center w-full pt-4'>
+				<QRCode data={data?.publicKey} />
 			</div>
 			<p className='mx-auto text-md align-middle font-medium text-gray-700 truncate'>
 				{trimAddress(data?.publicKey ?? '')}
